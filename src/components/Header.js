@@ -46,7 +46,7 @@ class Header extends React.Component {
                         <ul>
                             <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
                         </ul>
-
+                        <Link to="/main" className="brand-logo">test</Link>
                         <div className="right">
                             <ul>
                                 { this.props.isLoggedIn ? logoutButton : loginButton }
