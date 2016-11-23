@@ -5,6 +5,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Header extends React.Component {
 
+
+
     constructor(props) {
         super(props);
 
@@ -25,30 +27,35 @@ class Header extends React.Component {
 
     render() {
 
+
         const loginButton = (
             <li>
-                <Link to="/login"><i className="material-icons">vpn_key</i></Link>
+                <Link to="/login">
+                    Login
+                </Link>
+                <Link to="/register">
+                    Join Us
+                </Link>
             </li>
         );
 
         const logoutButton = (
             <li>
-                <a onClick={this.props.onLogout}><i className="material-icons">lock_open</i></a>
+                <a onClick={this.props.onLogout}><i className="fa fa-sign-out"></i></a>
             </li>
         );
 
         return (
             <div>
                 <nav>
-                    <div className="nav-wrapper blue darken-1">
-                        <Link to="/" className="brand-logo center">MEMOPAD</Link>
+                    <div className="nav-wrapper blue darken-1 nav-style">
 
-                        <ul>
+                        <ul className="hide-on-med-and-down">
+                            <li><Link to="/"><i className="material-icons" >home</i></Link></li>
                             <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
                         </ul>
-                        <Link to="/main" className="brand-logo">test</Link>
-                        <div className="right">
-                            <ul>
+                        <div className="col s12">
+                            <ul className="right hide-on-med-and-down">
                                 { this.props.isLoggedIn ? logoutButton : loginButton }
                             </ul>
                         </div>

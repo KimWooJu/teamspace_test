@@ -340,3 +340,8 @@ ul.search-results {
     -webkit-animation-name: search-leave;
     animation-name: search-leave;
 }
+
+.nav-style{
+    padding-left: 20px;
+    padding-right: 20px;
+}

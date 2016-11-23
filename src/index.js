@@ -16,7 +16,7 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
-                <IndexRoute component={Home}/>
+                <IndexRoute component={Main}/>
                 <Route path="home" component={Home}/>
                 <Route path="main" component={Main}/>
                 <Route path="login" component={Login}/>
