@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Write, MemoList } from 'components';
+import { NewProject, ProjectCardList } from 'components';
 import {
-    memoPostRequest,
-    memoListRequest,
-    memoEditRequest,
-    memoRemoveRequest,
-    memoStarRequest
-} from 'actions/memo';
+    projectCardPostRequest,
+    projectCardListRequest,
+    projectCardEditRequest,
+    projectCardRemoveRequest,
+    projectCardStarRequest
+} from 'actions/projectCard';
 
 
-class Home extends React.Component {
+class Projects extends React.Component {
 
     constructor(props) {
         super(props);
@@ -18,8 +18,8 @@ class Home extends React.Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleStar = this.handleStar.bind(this);
-        this.loadNewMemo = this.loadNewMemo.bind(this);
-        this.loadOldMemo = this.loadOldMemo.bind(this);
+        this.loadNewProjectCard = this.loadNewProjectCard.bind(this);
+        this.loadOldProjectCard = this.loadOldProjectCard.bind(this);
         this.state = {
             loadingState: false,
             initiallyLoaded: false
@@ -27,33 +27,33 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        const loadMemoLoop = () => {
-            this.loadNewMemo().then(
+        const loadProjectCardLoop = () => {
+            this.loadNewProjectCard().then(
                 () => {
-                    this.memoLoaderTimeoutId = setTimeout(loadMemoLoop, 5000);
+                    this.projectCardLoaderTimeoutId = setTimeout(loadProjectCardLoop, 5000);
                 }
             );
         };
 
-        // const loadUntilScrollable = () => {
-        //     // IF THE SCROLLBAR DOES NOT EXIST,
-        //     if($("body").height() < $(window).height()) {
-        //         this.loadOldMemo().then(
-        //             () => {
-        //                 // DO THIS RECURSIVELY UNLESS IT'S LAST PAGE
-        //                 if(!this.props.isLast) {
-        //                     loadUntilScrollable();
-        //                 }
-        //             }
-        //         );
-        //     }
-        // };
+        const loadUntilScrollable = () => {
+            // IF THE SCROLLBAR DOES NOT EXIST,
+            if($("body").height() < $(window).height()) {
+                this.loadOldProjectCard().then(
+                    () => {
+                        // DO THIS RECURSIVELY UNLESS IT'S LAST PAGE
+                        if(!this.props.isLast) {
+                            loadUntilScrollable();
+                        }
+                    }
+                );
+            }
+        };
 
 
-        this.props.memoListRequest(true, undefined, undefined, this.props.username).then(
+        this.props.projectCardListRequest(true, undefined, undefined, this.props.username).then(
             () => {
                 setTimeout(loadUntilScrollable, 1000);
-                loadMemoLoop();
+                loadProjectCardLoop();
                 this.setState({
                     initiallyLoaded: true
                 });
@@ -64,7 +64,7 @@ class Home extends React.Component {
             // WHEN HEIGHT UNDER SCROLLBOTTOM IS LESS THEN 250
             if ($(document).height() - $(window).height() - $(window).scrollTop() < 250) {
                 if(!this.state.loadingState) {
-                    this.loadOldMemo();
+                    this.loadOldProjectCard();
                     this.setState({
                         loadingState: true
                     });
@@ -81,7 +81,7 @@ class Home extends React.Component {
 
     componentWillUnmount() {
         // STOPS THE loadMemoLoop
-        clearTimeout(this.memoLoaderTimeoutId);
+        clearTimeout(this.projectCardLoaderTimeoutId);
 
         // REMOVE WINDOWS SCROLL LISTENER
         $(window).unbind();
@@ -98,7 +98,7 @@ class Home extends React.Component {
         }
     }
 
-    loadNewMemo() {
+    loadNewProjectCard() {
          // CANCEL IF THERE IS A PENDING REQUEST
         if(this.props.listStatus === 'WAITING') {
             return new Promise((resolve, reject) => {
@@ -107,15 +107,15 @@ class Home extends React.Component {
         }
 
         // IF PAGE IS EMPTY, DO THE INITIAL LOADING
-        if(this.props.memoData.length === 0 )
-            return this.props.memoListRequest(true);
+        if(this.props.projectCardData.length === 0 )
+            return this.props.projectCardListRequest(true);
 
 
 
-        return this.props.memoListRequest(false, 'new', this.props.memoData[0]._id, this.props.username);
+        return this.props.projectCardListRequest(false, 'new', this.props.projectCardData[0]._id, this.props.username);
     }
 
-    loadOldMemo() {
+    loadOldProjectCard() {
         // CANCEL IF USER IS READING THE LAST PAGE
         if(this.props.isLast) {
             return new Promise(
@@ -126,10 +126,10 @@ class Home extends React.Component {
         }
 
         // GET ID OF THE MEMO AT THE BOTTOM
-        let lastId = this.props.memoData[this.props.memoData.length - 1]._id;
+        let lastId = this.props.projectCardData[this.props.projectCardData.length - 1]._id;
 
         // START REQUEST
-        return this.props.memoListRequest(false, 'old', lastId, this.props.username).then(() => {
+        return this.props.projectCardListRequest(false, 'old', lastId, this.props.username).then(() => {
             // IF IT IS LAST PAGE, NOTIFY
             if(this.props.isLast) {
                 Materialize.toast('You are reading the last page', 2000);
@@ -138,12 +138,12 @@ class Home extends React.Component {
     }
 
     handlePost(contents) {
-        return this.props.memoPostRequest(contents).then(
+        return this.props.projectCardPostRequest(contents).then(
             () => {
                 if(this.props.postStatus.status === "SUCCESS") {
                     // TRIGGER LOAD NEW MEMO
                     // TO BE IMPLEMENTED
-                    this.loadNewMemo().then(
+                    this.loadNewProjectCard().then(
                         () => {
                             Materialize.toast("Success!", 2000);
                         }
@@ -178,7 +178,7 @@ class Home extends React.Component {
     }
 
     handleEdit(id, index, contents) {
-        return this.props.memoEditRequest(id, index, contents).then(() => {
+        return this.props.projectCardEditRequest(id, index, contents).then(() => {
             if(this.props.editStatus.status === 'SUCCESS') {
                 Materialize.toast('Success!', 2000);
             } else {
@@ -215,12 +215,12 @@ class Home extends React.Component {
     }
 
     handleRemove(id, index) {
-        this.props.memoRemoveRequest(id, index).then(
+        this.props.projectCardRemoveRequest(id, index).then(
             () => {
                 if(this.props.removeStatus.status === "SUCCESS") {
                     setTimeout(() => {
                         if($("body").height() < $(window).height()) {
-                            this.loadOldMemo();
+                            this.loadOldProjectCard();
                         }
                     }, 1000);
                 } else {
@@ -254,7 +254,7 @@ class Home extends React.Component {
     }
 
     handleStar(id, index) {
-        this.props.memoStarRequest(id, index).then(
+        this.props.projectCardStarRequest(id, index).then(
             () => {
                 if(this.props.starStatus.status !== "SUCCESS") {
                     /*
@@ -286,7 +286,7 @@ class Home extends React.Component {
     }
 
     render() {
-        const write = (<Write onPost={this.handlePost}/>);
+        const newProject = (<NewProject onPost={this.handlePost}/>);
 
         const emptyView = (
             <div className="container">
@@ -305,15 +305,15 @@ class Home extends React.Component {
                         </div>
                     </div>
                 </div>
-                { this.state.initallyLoaded  && this.props.memoData.length === 0 ? emptyView : undefined }
+                { this.state.initallyLoaded  && this.props.projectCardData.length === 0 ? emptyView : undefined }
             </div>
         );
 
         return (
             <div className="wrapper">
                 { typeof this.props.username !== 'undefined' ? wallHeader : undefined }
-                {this.props.isLoggedIn ? <Write onPost={this.handlePost}/> : undefined}
-                <MemoList data={this.props.memoData} currentUser={this.props.currentUser}
+                {this.props.isLoggedIn ? <NewProject onPost={this.handlePost}/> : undefined}
+                <ProjectCardList data={this.props.projectCardData} currentUser={this.props.currentUser}
                     onEdit={this.handleEdit}
                     onRemove={this.handleRemove}
                     onStar={this.handleStar}/>
@@ -322,47 +322,47 @@ class Home extends React.Component {
     }
 }
 
-Home.PropTypes = {
+Projects.PropTypes = {
     username: React.PropTypes.string
 };
 
-Home.defaultProps = {
+Projects.defaultProps = {
     username: undefined
 };
 
 const mapStateToProps = (state) => {
     return {
         isLoggedIn: state.authentication.status.isLoggedIn,
-        postStatus: state.memo.post,
+        postStatus: state.projectCard.post,
         currentUser: state.authentication.status.currentUser,
-        memoData: state.memo.list.data,
-        listStatus: state.memo.list.status,
-        isLast: state.memo.list.isLast,
-        editStatus: state.memo.edit,
-        removeStatus: state.memo.remove,
-        starStatus: state.memo.star
+        projectCardData: state.projectCard.list.data,
+        listStatus: state.projectCard.list.status,
+        isLast: state.projectCard.list.isLast,
+        editStatus: state.projectCard.edit,
+        removeStatus: state.projectCard.remove,
+        starStatus: state.projectCard.star
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        memoPostRequest: (contents) => {
-            return dispatch(memoPostRequest(contents));
+        projectCardPostRequest: (contents) => {
+            return dispatch(projectCardPostRequest(contents));
         },
-        memoListRequest: (isInitial, listType, id, username) => {
-            return dispatch(memoListRequest(isInitial, listType, id, username));
+        projectCardListRequest: (isInitial, listType, id, username) => {
+            return dispatch(projectCardListRequest(isInitial, listType, id, username));
         },
-        memoEditRequest: (id, index, contents) => {
-            return dispatch(memoEditRequest(id, index, contents));
+        projectCardEditRequest: (id, index, contents) => {
+            return dispatch(projectCardEditRequest(id, index, contents));
         },
-        memoRemoveRequest: (id, index) => {
-            return dispatch(memoRemoveRequest(id, index));
+        projectCardRemoveRequest: (id, index) => {
+            return dispatch(projectCardRemoveRequest(id, index));
         },
-        memoStarRequest: (id, index) => {
-            return dispatch(memoStarRequest(id, index));
+        projectCardStarRequest: (id, index) => {
+            return dispatch(projectCardStarRequest(id, index));
         }
     };
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Projects);

@@ -53,6 +53,7 @@ class Header extends React.Component {
                         <ul className="hide-on-med-and-down">
                             <li><Link to="/"><i className="material-icons" >home</i></Link></li>
                             <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
+                            <li><Link to="/projects"><i className="material-icons">content_copy</i></Link></li>
                         </ul>
                         <div className="col s12">
                             <ul className="right hide-on-med-and-down">

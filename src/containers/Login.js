@@ -24,7 +24,7 @@ class Login extends React.Component {
                     document.cookie = 'key=' + btoa(JSON.stringify(loginData));
 
                     Materialize.toast('Welcome ' + id + '!', 2000);
-                    browserHistory.push('/');
+                    browserHistory.push('/projects');
                     return true;
                 } else {
                     let $toastContent = $('<span style="color: #FFB4BA">Incorrect username or password</span>');

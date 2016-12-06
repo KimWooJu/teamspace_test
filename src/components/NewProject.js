@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Write extends React.Component {
+class NewProject extends React.Component {
 
     constructor(props) {
         super(props);
@@ -35,12 +35,12 @@ class Write extends React.Component {
             <div className="container write">
                 <div className="card">
                     <div className="card-content">
-                        <textarea className="materialize-textarea" placeholder="Write down your memo"
+                        <textarea className="materialize-textarea" placeholder="Write your Project"
                         value={this.state.contents}
                         onChange={this.handleChange}></textarea>
                     </div>
                     <div className="card-action">
-                        <a onClick={this.handlePost}>Post</a>
+                        <a onClick={this.handlePost}>Create</a>
                     </div>
                 </div>
             </div>
@@ -48,12 +48,12 @@ class Write extends React.Component {
     }
 }
 
-Write.propTypes = {
+NewProject.propTypes = {
     onPost: React.PropTypes.func
 };
 
-Write.defaultProps = {
+NewProject.defaultProps = {
     onPost: (contents) => { console.error('onPost not defined'); }
 };
 
-export default Write;
+export default NewProject;
