@@ -41,8 +41,17 @@ class Header extends React.Component {
 
         const logoutButton = (
             <li>
-                <a onClick={this.props.onLogout}><i className="fa fa-sign-out"></i></a>
+                <a onClick={this.props.onLogout}><i className="material-icons">exit_to_app</i></a>
             </li>
+        );
+
+        const search = (
+            <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
+
+        );
+
+        const projectButton = (
+            <li><Link to="/projects"><i className="material-icons">content_copy</i></Link></li>
         );
 
         return (
@@ -52,8 +61,7 @@ class Header extends React.Component {
 
                         <ul className="hide-on-med-and-down">
                             <li><Link to="/"><i className="material-icons" >home</i></Link></li>
-                            <li><a onClick={this.toggleSearch}><i className="material-icons">search</i></a></li>
-                            <li><Link to="/projects"><i className="material-icons">content_copy</i></Link></li>
+                                { this.props.isLoggedIn ? projectButton : ""}
                         </ul>
                         <div className="col s12">
                             <ul className="right hide-on-med-and-down">
